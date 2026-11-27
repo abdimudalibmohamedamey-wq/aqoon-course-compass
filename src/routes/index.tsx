@@ -1,23 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { ArrowRight, ArrowUpRight, BookOpen, Globe2, MapPin, Monitor, BriefcaseBusiness, Sprout, GraduationCap, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CourseCard } from '@/components/course-card';
+import { catalogQuery } from '@/lib/queries';
+import { heroImage, pageHead, camps, categories } from '@/lib/aqoon';
+export const Route=createFileRoute('/')({head:()=>pageHead('Knowledge That Empowers','Free learning for refugees in Ifo, Hagadera and Dagahaley. Build skills, share knowledge and create new opportunities with AQOON.'),loader:({context})=>context.queryClient.ensureQueryData(catalogQuery),component:Home});
+function Home(){const {data:courses}=useSuspenseQuery(catalogQuery);const icons=[Monitor,Globe2,BriefcaseBusiness,Sprout];return <><section className="home-hero"><img className="hero-photo" src={heroImage} alt="African learners developing digital skills in a computer classroom"/><div className="hero-shade"/><div className="hero-inner"><div className="hero-eyebrow"><span/> LEARNING TODAY. LEADING TOMORROW.</div><h1>Knowledge Has<br/>No Borders.<br/><em>Opportunity Starts<br/>With Learning.</em></h1><p>A world of knowledge, right here in Dadaab.<br/>Learn new skills. Grow your confidence. Shape your future.</p><div className="hero-actions"><Button variant="gold" size="lg" asChild><Link to="/courses">Start Learning <ArrowUpRight/></Link></Button><Button variant="hero" size="lg" asChild><Link to="/auth" search={{mode:'signup',role:'educator'}}>Become an Educator <ArrowUpRight/></Link></Button></div><div className="hero-note"><span><Check size={14}/> Free to learn</span><span><Check size={14}/> Made for our communities</span></div></div><div className="hero-caption"><span className="caption-line"/>Every learner. Every possibility.</div></section><section className="community-strip"><div className="community-strip-inner"><span><MapPin size={20}/><strong>Rooted in Dadaab.<br/><small>Connected through knowledge.</small></strong></span><div>{camps.map(c=><Link key={c} to="/communities"><span className="status-dot"/>{c}</Link>)}</div><span className="strip-message">Three communities. <strong>One shared future.</strong></span></div></section><section className="section-wrap featured"><div className="section-heading"><div><p className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p><h2>Small steps. <em>New possibilities.</em></h2><p>Practical courses for the skills that matter to you.</p></div><Button variant="outline" asChild><Link to="/courses">Explore all courses <ArrowRight/></Link></Button></div><div className="course-grid">{courses.slice(0,3).map(course=><CourseCard key={course.id} course={course}/>)}</div></section><section className="category-section"><div className="section-wrap"><div className="section-heading"><div><p className="eyebrow">FOLLOW YOUR CURIOSITY</p><h2>What will you learn next?</h2></div></div><div className="category-grid">{categories.map((category,i)=>{const Icon=icons[i]??BookOpen;return <Link to="/courses" search={{category}} key={category}><span className={`category-icon category-${i}`}><Icon size={26}/></span><h3>{category}</h3><ArrowUpRight size={20}/></Link>;})}</div></div></section><section className="section-wrap about-preview"><div className="about-photo"><img src={heroImage} alt="Learners at a computer training workshop" loading="lazy"/><span>Knowledge belongs to everyone.</span></div><div><p className="eyebrow">A COMMUNITY BUILT ON POSSIBILITY</p><h2>This is AQOON.<br/><em>This is your next chapter.</em></h2><p>Opportunity begins when knowledge is within reach. AQOON connects refugees in Ifo, Hagadera and Dagahaley with practical learning and educators who believe in their potential.</p><p>Whatever your starting point, there is a place for you here.</p><Button variant="outline" asChild><Link to="/about">Our story <ArrowRight/></Link></Button></div></section><section className="educator-band"><div className="section-wrap"><GraduationCap size={42}/><div><p className="eyebrow">SHARE WHAT YOU KNOW</p><h2>Your knowledge could change someone’s tomorrow.</h2></div><Button variant="gold" size="lg" asChild><Link to="/auth" search={{mode:'signup',role:'educator'}}>Become an Educator <ArrowUpRight/></Link></Button></div></section><section className="section-wrap camps-section"><p className="eyebrow">OUR HOME. OUR COMMUNITIES.</p><h2>Different stories. <em>A shared ambition.</em></h2><div className="camp-grid">{camps.map((camp,i)=><Link to="/communities" key={camp}><span>0{i+1} / DADAAB</span><h3>{camp}</h3><p>A space to learn, connect and build what comes next.</p><ArrowUpRight/></Link>)}</div></section></>}

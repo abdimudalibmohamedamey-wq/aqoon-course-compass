@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application architecture
+- Keep public course discovery in top-level SSR routes and signed-in dashboards under the client-only authenticated layout, so public links remain shareable and sessions survive refreshes.
+- Store roles separately and enforce all course and enrolment permissions in database policies; never trust role selections from signup as privileges.
+- Use server functions for public catalog reads and admin role mutations; browser account and ordinary record mutations use the generated RLS-scoped client.
+- Store uploaded course files privately and issue short-lived signed links only under storage access policies.

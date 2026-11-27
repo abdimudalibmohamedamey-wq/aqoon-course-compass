@@ -1,0 +1,4 @@
+import { Link } from '@tanstack/react-router';
+import { ArrowUpRight, Clock, BarChart3 } from 'lucide-react';
+import { courseImage, type Course } from '@/lib/aqoon';
+export function CourseCard({course}:{course:Course}){return <Link to="/courses/$id" params={{id:course.id}} className="course-card group"><div className="course-photo"><img src={courseImage(course.image_key)} alt={course.category==='Languages'?'Students learning in a classroom':'Students taking part in computer training'} loading="lazy"/><span className="course-label">{course.category}</span><span className="course-arrow"><ArrowUpRight size={20}/></span></div><div className="course-copy"><div className="course-meta"><span><BarChart3 size={14}/>{course.level}</span><span><Clock size={14}/>{course.duration}</span></div><h3>{course.title}</h3><p>{course.description}</p><div className="course-bottom"><span>AQOON learning</span><strong>Free</strong></div></div></Link>}

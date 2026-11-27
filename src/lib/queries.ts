@@ -1,0 +1,7 @@
+import { queryOptions } from '@tanstack/react-query';
+import { getCourses } from './courses.functions';
+import { supabase } from '@/integrations/supabase/client';
+export const catalogQuery = queryOptions({queryKey:['catalog'],queryFn:()=>getCourses(),staleTime:60000});
+export const accountQuery = queryOptions({queryKey:['account'],queryFn:async()=>{const {data:{user},error}=await supabase.auth.getUser();if(error||!user)return null;const [p,r]=await Promise.all([supabase.from('profiles').select('*').eq('id',user.id).single(),supabase.from('user_roles').select('role').eq('user_id',user.id)]);if(p.error)throw p.error;if(r.error)throw r.error;return {user,profile:p.data,roles:r.data.map(x=>x.role)};},staleTime:30000});
+export const dashboardQuery = queryOptions({queryKey:['dashboard'],queryFn:async()=>{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error('Please sign in');const {data,error}=await supabase.from('enrolments').select('*,courses(*)').eq('user_id',user.id).order('created_at',{ascending:false}).limit(100);if(error)throw error;return data;}});
+export const educatorQuery = queryOptions({queryKey:['educator-courses'],queryFn:async()=>{const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error('Please sign in');const {data,error}=await supabase.from('courses').select('*').eq('educator_id',user.id).order('created_at',{ascending:false}).limit(100);if(error)throw error;return data;}});
